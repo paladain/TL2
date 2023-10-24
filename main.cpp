@@ -1,9 +1,17 @@
 #include <cstdio>
 #include <cstdlib>
+#include <cassert>
+#include "TextureConverter.h"
+
+// コマンドライン追加
+enum Argument {
+	kApplicationPath, // アプリケーションのパス
+	kFilePath,        // 渡されたファイルのパス
+
+	NumArgument
+};
 
 int main(int argc, char* argv[]) {
-
-	//printf("Hello,world!\n");
 
 	// argcの数だけ繰り返す
 	for (int i = 0; i < argc; i++) {
@@ -12,6 +20,21 @@ int main(int argc, char* argv[]) {
 		// 改行
 		printf("\n");
 	}
+
+	assert(argc >= NumArgument);
+
+	// COM ライブラリの初期化
+	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	assert(SUCCEEDED(hr));
+
+	// テクスチャコンバーター
+	TextureConverter converter;
+
+	// テクスチャ変換
+	converter.ConvertTextureWICToDDS(argv[kFilePath]);
+
+	// COM ライブラリの終了
+	CoUninitialize();
 
 	system("pause");
 
